@@ -1,0 +1,28 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract SchoolGradingSystem {
+    struct Student {
+        string name;
+        uint256 grade;
+    }
+
+    mapping (address => Student) public students;
+
+    function addStudent(string memory _name) public {
+       require(bytes(students[msg.sender].name).length == 0, "Student already exists");
+        students[msg.sender] = Student(_name, 0);
+    }
+
+    function updateGrade(address _student, uint256 _grade) public {
+        require(students[_student].grade < 100, "Student has already graduated");
+        require(_grade >= 0 && _grade <= 100, "Invalid grade");
+        students[_student].grade = _grade;
+    }
+
+    function checkEligibilityForGraduation(address _student) public view returns (bool) {
+        require(students[_student].grade >= 100, "Student has not met graduation requirements");
+        assert(students[_student].grade <= 100); 
+        return true;
+    }
+}
